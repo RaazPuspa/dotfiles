@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Name: extention rename (er)
+# example: ./extentionrename htm html
+
+IFS=$'\n'
+
+if [ -z "$1" ] || [ -z "$2" ]
+then
+    echo "Usage: oldExtention newExtention"
+    exit -1
+fi
+
+echo ""
+
+# get file through iteration
+for infile in $(ls -1 *.${1})
+do
+    #get filename without extention
+    baseFilename=`basename "${infile}" .${1}`
+
+    #append the new file extention to the basename
+    outFilename="${baseFilename}.${2}"
+
+    echo "Moving \"$infile\" --> \"$outFilename\" ..."
+
+    #remane the initial file with newly created filename
+    mv "$infile" "$outFilename"
+done
+echo ""

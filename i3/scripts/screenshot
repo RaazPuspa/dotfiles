@@ -1,0 +1,24 @@
+#! /bin/bash
+
+if [ -z "$1" ]; then
+    echo "Usage: prscreenshot option"
+    echo "OPTIONS:"
+    echo "f: full-screen"
+    echo "w: window-only"
+    echo "s: selected"
+    exit -1
+fi
+
+cd ~/Pictures/Screenshot
+file=`date '+%Y-%m-%d %H:%M:%S'`
+
+if [ $1 == 'f' ]; then
+    scrot temp.png
+elif [ $1 == 'w' ]; then 
+    scrot -u temp.png
+elif [ $1 == 's' ]; then
+    scrot -s temp.png
+fi
+
+outputfile="$HOME/Pictures/Screenshot/Screenshot from ${file}.png"
+mv temp.png "$outputfile"

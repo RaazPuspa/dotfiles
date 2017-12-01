@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# package directories
+pwd=`pwd`
+bin=$HOME/.bin
+config=$HOME/.config
+vim=$HOME/.vim
+bundle=$vim/bundle
+cmus=$config/cmus
+i3=$config/i3
+workspace=$HOME/workspace
+
+# clone i3 files from personal git repo
+cd $workspace
+git clone https://github.com/pusparaaz/i3.git
+cd $HOME
+
+# install required packages
+sudo apt-get install -y vlc vim cmus feh scrot
+sudo apt-get install -y php7.0 php7.0-curl libapache2-mod-php libapache2-mod-php7.0
+sudo apt-get install -y apache2
+sudo apt-get install -y mysql-server mysql-client phpmyadmin
+sudo apt-get install -y composer
+sudo apt-get install -y lxappearance
+sudo apt-get install -y i3blocks dmenu i3lock compton
+sudo apt-get install -y ibus-m17n
+
+# create required directories if they don't exist
+if [ ! -d "$config" ]; then
+	mkdir $config;
+fi
+
+if [ ! -d "$vim" ]; then
+	mkdir $vim;
+    mkdir $vim/tmp;
+    mkdir $bundle;
+    git clone https://github.com/VundleVim/Vundle.vim.git $bundle/Vundle.vim
+fi
+
+if [ ! -d "$cmus" ]; then
+	mkdir $cmus;
+fi
+
+if [ ! -d "$i3" ]; then
+	mkdir $i3;
+fi
+
+if [ ! -d "$workspace" ]; then
+	mkdir $workspace;
+fi
+
+if [ -d "$bin" ]; then
+	mv $bin/* $workspace/i3/scripts/;
+	rmdir $bin;
+fi
+
+# remove default config and rc files
+rm $cmus/autosave
+rm $i3/config
+rm $i3/i3blocks
+rm $HOME/.vimrc
+rm $HOME/.gitconfig
+
+# init global gitconfig
+ln -s $pwd/gitconfig $HOME/.gitconfig
+
+# init vimrc
+ln -s $pwd/vimplugins $vim/plugins.vim
+ln -s $pwd/vimrc $HOME/.vimrc
+
+# put i3 config files and required scripts in respective directories
+ln -s $workspace/i3/i3config $i3/config
+ln -s $workspace/i3/i3blocks.conf $i3/i3blocks
+ln -s $workspace/i3/scripts $bin
+
+# config cmus
+ln -s $pwd/cmus.autosave $cmus/autosave
+
+# set desktop off for nautilus
+gsettings set org.gnome.desktop.background show-desktop-icons false
+

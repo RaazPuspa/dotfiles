@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Name: delete new line
+# example: ./newlinedelete mydocument.txt
+
+IFS=$'\n'
+
+if [ -z "$1" ]
+then
+    echo "Usage: filename"
+    exit -1
+fi
+
+sed -i '/^$/d' $1

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Name: bulk file rename
+# example: ./filerename common-name jpg
+
+IFS=$'\n'
+
+if [ -z "$1" ] || [ -z "$2" ]
+then
+    echo "Usage: ./bash common-name file-extention"
+    exit -1
+fi
+
+cd
+id=1
+
+for infile in $(ls -t1r *.*)
+do
+    newfile="${1}_${id}.${2}"
+    mv "$infile" "$newfile"
+    id=$((id+1))
+done

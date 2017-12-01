@@ -1,0 +1,13 @@
+[user]
+	email = puspa.bhattrai@ebpearls.com
+	name = Pusparaj Bhattarai
+[branch]
+	autosetuprebase = always
+[color]
+	ui = true
+	status = auto
+	branch = auto
+[merge]
+	tool = vimdiff
+[core]
+	editor = vim

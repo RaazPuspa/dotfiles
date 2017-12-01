@@ -1,0 +1,294 @@
+# i3 config file (v4)
+#*******************************************************************************
+# VARIABLES
+#*******************************************************************************
+set $exit 
+set $resize 
+set $workspace1 1
+set $workspace2 2
+set $workspace3 3
+set $workspace4 4
+set $workspace5 5
+set $workspace6 6
+set $workspace7 7
+set $workspace8 8
+set $workspace9 9
+set $workspace0 10
+
+#*******************************************************************************
+# GENERAL I3-WM CONFIGURATIONS
+#*******************************************************************************
+# set modifier key (Super as Mod4)
+set $mod Mod4
+
+# Font for window titles and also to be used by the bar unless a set explicitly
+font pango:M+ 1m 7
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# Type                  border  background font hint activeborder
+client.focused          #0099aa #0099aa #ffffff
+client.urgent           #900000 #900000 #aaaaaa
+client.unfocused        #333333 #333333 #aaaaaa
+client.focused_inactive #333333 #333333 #aaaaaa
+
+# Hide window edge borders
+hide_edge_borders both
+
+# Don't change focus with mouse
+focus_follows_mouse no
+
+# Display popup if it belongs to the fullscreen application only
+popup_during_fullscreen smart
+focus_on_window_activation smart
+
+# Automatic back-and-forth when switching to the current workspace
+workspace_auto_back_and_forth yes
+
+# Hide titlebar
+for_window [class="^.*"] border pixel 0 title_format " %title"
+
+
+#*******************************************************************************
+# MODES
+#*******************************************************************************
+# resize window
+mode $resize {
+        # These bindings trigger as soon as you enter the resize mode
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Escape mode "default"
+        bindsym Return mode "default"
+        bindsym $mod+shift+r mode "default"
+}
+
+# Create Log out, Reboot, Poweroff bindings
+mode $exit {
+        # Hibernate
+        bindsym h exec ~/.config/i3/scripts/i3lock && systemctl hibernate, mode "default"
+        # Lock
+        bindsym l exec ~/.config/i3/scripts/i3lock, mode "default"
+        # Reboot
+        bindsym r exec systemctl reboot, mode "default"
+        # Suspend
+        bindsym s exec ~/.config/i3/scripts/i3lock && systemctl suspend, mode "default"
+        # Logout
+        bindsym Shift+l exit, mode "default"
+        # Poweroff
+        bindsym Shift+s exec systemctl poweroff, mode "default"
+
+        # back to normal: Enter or Escape
+        bindsym Escape mode "default"
+        bindsym Return mode "default"
+        bindsym $mod+Shift+e mode "default"
+}
+
+# Start i3bar to display a workspace bar (plus i3status bar)
+bar {
+    colors {
+        # Whole color settings
+        background #00000000
+        statusline #ffffffff
+        separator  #0099aaff
+
+        # Type              border  background font
+        focused_workspace   #00000000 #00000000 #0099aaff
+        active_workspace    #00000000 #00000000 #ffffff55
+        inactive_workspace  #00000000 #00000000 #ffffff55
+        urgent_workspace    #00000000 #00000000 #900000ff
+    }
+
+    position top
+    tray_output primary
+    separator_symbol "‹"
+    status_command i3status
+    strip_workspace_numbers yes
+    font pango:M+ 1m, FontAwesome 8
+    status_command i3blocks -c ~/.config/i3/i3blocks/config
+}
+
+
+#*******************************************************************************
+# I3-WM ACTIONS AND BINDINGS
+#*******************************************************************************
+# kill focused window
+bindsym $mod+Escape kill
+
+# exit i3-wm
+bindsym $mod+shift+q mode $exit
+
+# reload the configuration file
+bindsym $mod+shift+w reload
+
+# exit i3 (logs you out of your X session)
+bindsym $mod+shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# resize window
+bindsym $mod+shift+r mode $resize
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+shift+t restart
+
+# start a program launcher
+# bindsym $mod+a exec dmenu_run -b -i -fn "M+ 1m-9:regular" -nb "#3C3B37" -nf "#ffffff"
+bindsym $mod+a exec "rofi -combi-modi window,drun -show combi -modi combi"
+
+
+#*******************************************************************************
+# BINDINGS FOR PACKAGES
+#*******************************************************************************
+bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+shift+f exec firefox
+bindsym $mod+shift+n exec nautilus
+bindsym $mod+shift+s exec "unset XDG_CURRENT_DESKTOP; unity-control-center"
+bindsym $mod+shift+v exec vlc
+
+
+#*******************************************************************************
+# FOCUS CONFIGURATION
+#*******************************************************************************
+# change focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# change focus with tabs
+bindsym $mod+Tab focus right
+bindsym $mod+shift+Tab focus left
+
+# move focused window
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# move focused workspace
+bindsym $mod+Ctrl+h move workspace to output left
+bindsym $mod+Ctrl+l move workspace to output right
+
+
+#*******************************************************************************
+# WINDOW CONFIGURATION
+#*******************************************************************************
+# split in horizontal orientation
+bindsym $mod+b split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# focus the parent container
+bindsym $mod+p focus parent
+
+# focus the child container
+bindsym $mod+d focus child
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+t layout tabbed
+bindsym $mod+s layout stacking
+bindsym $mod+e layout toggle split
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+
+#*******************************************************************************
+# WINDOW CONFIGURATION
+#*******************************************************************************
+# switch to workspace
+bindsym $mod+1 workspace $workspace1
+bindsym $mod+2 workspace $workspace2
+bindsym $mod+3 workspace $workspace3
+bindsym $mod+4 workspace $workspace4
+bindsym $mod+5 workspace $workspace5
+bindsym $mod+6 workspace $workspace6
+bindsym $mod+7 workspace $workspace7
+bindsym $mod+8 workspace $workspace8
+bindsym $mod+9 workspace $workspace9
+bindsym $mod+0 workspace $workspace0
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $workspace1
+bindsym $mod+Shift+2 move container to workspace $workspace2
+bindsym $mod+Shift+3 move container to workspace $workspace3
+bindsym $mod+Shift+4 move container to workspace $workspace4
+bindsym $mod+Shift+5 move container to workspace $workspace5
+bindsym $mod+Shift+6 move container to workspace $workspace6
+bindsym $mod+Shift+7 move container to workspace $workspace7
+bindsym $mod+Shift+8 move container to workspace $workspace8
+bindsym $mod+Shift+9 move container to workspace $workspace9
+bindsym $mod+Shift+0 move container to workspace $workspace0
+
+
+#*******************************************************************************
+# SHORTCUTS
+#*******************************************************************************
+# Lock screen
+bindsym $mod+Shift+Return exec ~/.config/i3/scripts/i3lock
+
+# Print screen (screenshot)
+bindsym Print exec ~/.config/i3/scripts/screenshot f
+bindsym Ctrl+Print exec ~/.config/i3/scripts/screenshot w
+bindsym --release Shift+Print exec ~/.config/i3/scripts/screenshot s
+
+# Pulse Audio controls
+bindsym F6 exec pactl set-sink-mute 1 toggle && pkill -35 i3blocks
+bindsym F7 exec pactl set-sink-mute 1 0 && pactl set-sink-volume 1 -2% && pkill -35 i3blocks
+bindsym F8 exec pactl set-sink-mute 1 0 && pactl set-sink-volume 1 +2% && pkill -35 i3blocks
+
+# split screen
+bindsym $mod+Shift+m exec xrandr --output HDMI-1-1 --off
+bindsym $mod+m exec xrandr --output HDMI-1-1 --right-of eDP-1-1 --mode 1360x768
+bindsym $mod+Ctrl+m exec xrandr --output HDMI-1-1 --right-of eDP-1-1 --mode 1920x1080
+
+# change wallpaper
+bindsym $mod+w exec feh --randomize --bg-fill ~/Pictures/wallpapers/*
+
+
+#*******************************************************************************
+# WINDOW PLACEMENT
+#*******************************************************************************
+assign [class="Vlc"] $workspace9
+assign [class="Skype"] $workspace0
+assign [class="Firefox"] $workspace1
+assign [class="Nautilus"] $workspace4
+assign [class="Rhythmbox"] $workspace9
+assign [class="Thunderbird"] $workspace0
+
+
+#*******************************************************************************
+# STARTUP APPLICATIONS
+#*******************************************************************************
+# Start network manager
+exec --no-startup-id nm-applet
+
+# Set compositing manager
+exec_always --no-startup-id compton -b
+
+# Start skype
+exec --no-startup-id skypeforlinux
+
+# Start mail client
+exec --no-startup-id thunderbird
+
+# Set wallpaper
+exec feh --randomize --bg-fill ~/Pictures/wallpapers/*
+
+
+#*******************************************************************************
+# RICING
+#*******************************************************************************
+smart_gaps on
+gaps inner 7
+gaps outer 0

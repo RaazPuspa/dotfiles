@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Name: character replace in file name (cr)
+# example: ./characterreplace pdf -  _ (replaces every '-' in files containing 'pdf' in
+# their names with '_'
+
+IFS=$'\n'
+
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]
+then
+    echo "Usage: <fileSearch> <oldChar> <newChar>"
+    exit -1
+fi
+
+ls -1 | nawk '/'$1'/{old=$0;gsub(/'$2'/,"'$3'",$0);system("mv \""old"\" "$0)}'

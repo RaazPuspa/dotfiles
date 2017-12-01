@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+
+import sys,os, subprocess
+import re
+import argparse
+
+risky = ['rm', 'cp', 'mv']
+
+def check_risk(command):
+    for r in risky:
+        if r in command:
+            return False
+    return True
+
+def onoff(task):
+    command = "nmcli nm {}".format(task)
+    command = command.strip().split()
+    if check_risk(command) is False:
+        return None
+    output, error = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+    output = output.decode('utf-8').strip()
+    error = error.decode('utf-8').strip()
+
+    if error:
+        raise ValueError(error)
+    elif task == "status":
+        print(output)
+    else:
+        print(task)
+ 
+def connect_wifi(essid, password):
+    command = None
+    if not password:
+        command = "nmcli dev wifi connect {}".format(essid)
+    else:
+        command = "nmcli dev wifi connect {0} password {1}".format(essid, password)
+    command = command.strip().split()
+    if check_risk(command) is False:
+        return None
+
+    print("...connecting to {}...".format(essid))
+
+    error = ''
+    try:
+        output, error = subprocess.Popen(command, stdout = subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+        output = output.decode('utf-8').strip()
+        error = error.decode('utf-8').strip()
+        if error:
+            raise ValueError(error)
+        else:
+            print("connected to {}".format(essid))
+    except KeyboardInterrupt:
+        sys.exit()
+    except ValueError:
+        print(error)
+        sys.exit()
+
+def scan_wifi():
+    print("...searching nearby wifi...")
+    command = "iwlist wlan0 scan".split()
+    if check_risk(command) is False:
+        return None
+    output, error = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+    output = output.decode('utf-8').strip()
+    error = error.decode('utf-8').strip()
+    key = re.findall(r'Encryption key:(.*)', output)
+    essid = re.findall(r'ESSID:"(.*)"', output)
+    return list(zip(essid, key))
+
+def print_essid(l):
+    print("nearby connections (ssid) : ")
+    print("-"*30)
+    for x in l:
+        print("{}, password: {}".format(x[0], x[1]))
+
+def main():
+    parser = argparse.ArgumentParser(description="A simple wrapper for network stuffs")
+
+    parser.add_argument("-n", "--name", help="nearby network name")
+    parser.add_argument("-p", "--password", help="network's password")
+    parser.add_argument("-s", "--search", help="search nearby networks", action = 'store_true',)
+
+    parser.add_argument("-on", "--enable", help="enable wifi", action = 'store_true',)
+    parser.add_argument("-off", "--disable", help="disable wifi", action = 'store_true',)
+    parser.add_argument("-stat", "--status", help="show wifi status", action = 'store_true',)
+
+    args = parser.parse_args()
+
+    if args.search:
+        print_essid(scan_wifi())
+    elif args.name and args.password:
+        connect_wifi(args.name, args.password)
+    elif args.name:
+        connect_wifi(args.name, '')
+    elif args.enable:
+        onoff("wifi on")
+    elif args.disable:
+        onoff("wifi off")
+    elif args.status:
+        onoff("status")
+    else:
+         print("-h or --help for help")
+
+if __name__=="__main__":
+    main()
