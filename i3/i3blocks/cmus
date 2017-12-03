@@ -1,4 +1,0 @@
-#!/bin/bash
-
-title=`cmus-remote -Q | grep title | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}'`
-echo $title

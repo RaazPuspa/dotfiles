@@ -4,11 +4,6 @@ color=#FFFFFF
 separator=false
 separator_block_width=5
 
-[cmus]
-command=~/.config/i3/i3blocks/cmus
-
-[separator]
-
 [cpu]
 command=~/.config/i3/i3blocks/cpu
 interval=30
@@ -27,12 +22,24 @@ interval=30
 
 [seperator]
 
+[brightness]
+command=~/.config/i3/i3blocks/brightness
+interval=30
+
+[separator]
+
 [volume]
 command=~/.config/i3/i3blocks/volume
 signal=1
 interval=10
 
 [seperator]
+
+[battery]
+command=~/.config/i3/i3blocks/battery
+interval=30
+
+[separator]
 
 [time]
 command=date '+%d %b %Y (%a) %H:%M:%S'

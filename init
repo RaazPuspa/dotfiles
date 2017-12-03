@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# package directories
+pwd=`pwd`
+i3=$config/i3
+bin=$HOME/.bin
+vim=$HOME/.vim
+bundle=$vim/bundle
+config=$HOME/.config
+
+# install required packages
+sudo apt install -y nodejs npm composer vlc ibus-m17n vim
+sudo apt install -y feh scrot i3-wm i3blocks dmenu i3lock compton
+sudo apt install -y apache2 php mysql-server mysql-client libapache2-mod-php
+
+# make scripts executable
+chmod +x $pwd/scripts/*
+chmod +x $pwd/i3/scripts/*
+
+# remove default config and rc files
+if [ -d "$i3" ]; then
+    rm -rf $i3
+fi
+
+if [ -d "$vim" ]; then
+    rm -rf $vim
+fi
+
+if [ -f "$HOME/.vimrc" ];then
+    rm $HOME/.vimrc
+fi
+
+if [ -f "$HOME/.gitconfig" ];then
+    rm $HOME/.gitconfig
+fi
+
+# create required directories if they don't exist
+if [ ! -d "$config" ]; then
+    mkdir $config;
+fi
+
+if [ ! -d "$vim" ]; then
+    mkdir $vim;
+    mkdir $bundle;
+    mkdir $vim/tmp;
+    git clone https://github.com/VundleVim/Vundle.vim.git $bundle/Vundle.vim
+fi
+
+if [ ! -d "$bin" ]; then
+    mkdir $bin;
+    export PATH=$bin:$PATH
+fi
+
+# init global gitconfig
+ln -s $pwd/gitconfig $HOME/.gitconfig
+
+# init vimrc
+ln -s $pwd/vimrc $HOME/.vimrc
+ln -s $pwd/plugins.vim $vim/plugins.vim
+
+# put i3 config files and required scripts in respective directories
+ln -s $pwd/i3 $i3
+
+# set desktop off for nautilus
+gsettings set org.gnome.desktop.background show-desktop-icons false

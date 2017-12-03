@@ -33,6 +33,9 @@ client.urgent           #900000 #900000 #aaaaaa
 client.unfocused        #333333 #333333 #aaaaaa
 client.focused_inactive #333333 #333333 #aaaaaa
 
+# Hide titlebar
+for_window [class="^.*"] border pixel 0 title_format " %title"
+
 # Hide window edge borders
 hide_edge_borders both
 
@@ -46,46 +49,43 @@ focus_on_window_activation smart
 # Automatic back-and-forth when switching to the current workspace
 workspace_auto_back_and_forth yes
 
-# Hide titlebar
-for_window [class="^.*"] border pixel 0 title_format " %title"
-
 
 #*******************************************************************************
 # MODES
 #*******************************************************************************
 # resize window
 mode $resize {
-        # These bindings trigger as soon as you enter the resize mode
-        bindsym h resize shrink width 10 px or 10 ppt
-        bindsym j resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
+    # These bindings trigger as soon as you enter the resize mode
+    bindsym h resize shrink width 3 px or 3 ppt
+    bindsym j resize grow height 3 px or 3 ppt
+    bindsym k resize shrink height 3 px or 3 ppt
+    bindsym l resize grow width 3 px or 3 ppt
 
-        # back to normal: Enter or Escape
-        bindsym Escape mode "default"
-        bindsym Return mode "default"
-        bindsym $mod+shift+r mode "default"
+    # back to normal: Enter or Escape
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym $mod+shift+r mode "default"
 }
 
 # Create Log out, Reboot, Poweroff bindings
 mode $exit {
-        # Hibernate
-        bindsym h exec ~/.config/i3/scripts/i3lock && systemctl hibernate, mode "default"
-        # Lock
-        bindsym l exec ~/.config/i3/scripts/i3lock, mode "default"
-        # Reboot
-        bindsym r exec systemctl reboot, mode "default"
-        # Suspend
-        bindsym s exec ~/.config/i3/scripts/i3lock && systemctl suspend, mode "default"
-        # Logout
-        bindsym Shift+l exit, mode "default"
-        # Poweroff
-        bindsym Shift+s exec systemctl poweroff, mode "default"
+    # Hibernate
+    bindsym h exec ~/.config/i3/scripts/i3lock && systemctl hibernate, mode "default"
+    # Lock
+    bindsym l exec ~/.config/i3/scripts/i3lock, mode "default"
+    # Reboot
+    bindsym r exec reboot, mode "default"
+    # Suspend
+    bindsym s exec ~/.config/i3/scripts/i3lock && systemctl suspend, mode "default"
+    # Logout
+    bindsym Shift+l exit, mode "default"
+    # Poweroff
+    bindsym Shift+s systemctl poweroff, mode "default"
 
-        # back to normal: Enter or Escape
-        bindsym Escape mode "default"
-        bindsym Return mode "default"
-        bindsym $mod+Shift+e mode "default"
+    # back to normal: Enter or Escape
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym $mod+Shift+e mode "default"
 }
 
 # Start i3bar to display a workspace bar (plus i3status bar)
@@ -140,16 +140,6 @@ bindsym $mod+a exec "rofi -combi-modi window,drun -show combi -modi combi"
 
 
 #*******************************************************************************
-# BINDINGS FOR PACKAGES
-#*******************************************************************************
-bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+shift+f exec firefox
-bindsym $mod+shift+n exec nautilus
-bindsym $mod+shift+s exec "unset XDG_CURRENT_DESKTOP; unity-control-center"
-bindsym $mod+shift+v exec vlc
-
-
-#*******************************************************************************
 # FOCUS CONFIGURATION
 #*******************************************************************************
 # change focus
@@ -174,7 +164,7 @@ bindsym $mod+Ctrl+l move workspace to output right
 
 
 #*******************************************************************************
-# WINDOW CONFIGURATION
+# WORKSPACE CONFIGURATION
 #*******************************************************************************
 # split in horizontal orientation
 bindsym $mod+b split h
@@ -202,10 +192,6 @@ bindsym $mod+space focus mode_toggle
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
 
-
-#*******************************************************************************
-# WINDOW CONFIGURATION
-#*******************************************************************************
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
 bindsym $mod+2 workspace $workspace2
@@ -230,6 +216,11 @@ bindsym $mod+Shift+8 move container to workspace $workspace8
 bindsym $mod+Shift+9 move container to workspace $workspace9
 bindsym $mod+Shift+0 move container to workspace $workspace0
 
+# workspace screens
+workspace $workspace0 output HDMI-1-1
+workspace $workspace1 output HDMI-1-1
+workspace $workspace9 output HDMI-1-1
+
 
 #*******************************************************************************
 # SHORTCUTS
@@ -243,9 +234,18 @@ bindsym Ctrl+Print exec ~/.config/i3/scripts/screenshot w
 bindsym --release Shift+Print exec ~/.config/i3/scripts/screenshot s
 
 # Pulse Audio controls
-bindsym F6 exec pactl set-sink-mute 1 toggle && pkill -35 i3blocks
-bindsym F7 exec pactl set-sink-mute 1 0 && pactl set-sink-volume 1 -2% && pkill -35 i3blocks
-bindsym F8 exec pactl set-sink-mute 1 0 && pactl set-sink-volume 1 +2% && pkill -35 i3blocks
+bindsym XF86AudioRaiseVolume exec pactl set-sink-mute @DEFAULT_SINK@ 0 && pactl set-sink-volume @DEFAULT_SINK@ +3% && pkill -35 i3blocks
+bindsym XF86AudioLowerVolume exec pactl set-sink-mute @DEFAULT_SINK@ 0 && pactl set-sink-volume @DEFAULT_SINK@ -3% && pkill -35 i3blocks
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && pkill -35 i3blocks
+
+# Rhythmbox client control
+bindsym XF86AudioNext exec rhythmbox-client --next
+bindsym XF86AudioPrev exec rhythmbox-client --previous
+bindsym XF86AudioPlay exec rhythmbox-client --play-pause
+
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec ~/.config/i3/scripts/brightness + 3
+bindsym XF86MonBrightnessDown exec ~/.config/i3/scripts/brightness - 3
 
 # split screen
 bindsym $mod+Shift+m exec xrandr --output HDMI-1-1 --off
@@ -254,6 +254,17 @@ bindsym $mod+Ctrl+m exec xrandr --output HDMI-1-1 --right-of eDP-1-1 --mode 1920
 
 # change wallpaper
 bindsym $mod+w exec feh --randomize --bg-fill ~/Pictures/wallpapers/*
+
+
+#*******************************************************************************
+# BINDINGS FOR PACKAGES
+#*******************************************************************************
+bindsym $mod+shift+f exec firefox
+bindsym $mod+shift+n exec nautilus
+bindsym $mod+shift+s exec "unset XDG_CURRENT_DESKTOP; unity-control-center"
+bindsym $mod+shift+v exec vlc
+bindsym $mod+shift+x exec rhythmbox-client --no-present
+bindsym $mod+Return exec i3-sensible-terminal
 
 
 #*******************************************************************************
@@ -273,22 +284,25 @@ assign [class="Thunderbird"] $workspace0
 # Start network manager
 exec --no-startup-id nm-applet
 
-# Set compositing manager
-exec_always --no-startup-id compton -b
+# Start mail client
+exec --no-startup-id thunderbird
 
 # Start skype
 exec --no-startup-id skypeforlinux
 
-# Start mail client
-exec --no-startup-id thunderbird
+# Set compositing manager
+exec_always --no-startup-id compton -b
 
 # Set wallpaper
 exec feh --randomize --bg-fill ~/Pictures/wallpapers/*
+
+# Run script to mount File Partition and backlight directory
+exec --no-startup-id gnome-terminal --window-with-profile=hold_the_terminal -e ~/.config/i3/scripts/startup
 
 
 #*******************************************************************************
 # RICING
 #*******************************************************************************
 smart_gaps on
-gaps inner 7
+gaps inner 5
 gaps outer 0
