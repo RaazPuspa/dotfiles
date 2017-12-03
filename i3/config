@@ -80,7 +80,7 @@ mode $exit {
     # Logout
     bindsym Shift+l exit, mode "default"
     # Poweroff
-    bindsym Shift+s systemctl poweroff, mode "default"
+    bindsym Shift+s exec poweroff, mode "default"
 
     # back to normal: Enter or Escape
     bindsym Escape mode "default"

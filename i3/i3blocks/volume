@@ -1,4 +1,5 @@
 #!/bin/bash
 
-vol=`amixer -c 1 get Master | grep "Mono" | awk '{print $4}' | tr -d '[%]'`
-echo " " $vol
+sink=`pacmd stat | awk -F": " '/^Default sink name: /{print $2}'`
+volume=`pacmd list-sinks | awk '/^\s+name: /{indefault = $2 == "<'$sink'>"} /^\s+volume: / && indefault {print $5; exit}'`
+echo " " $volume
